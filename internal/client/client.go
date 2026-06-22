@@ -114,19 +114,28 @@ func (c *Client) GetRaw(ctx context.Context, path string, q url.Values) ([]byte,
 	if enc := q.Encode(); enc != "" {
 		full += "?" + enc
 	}
-	return c.rawGet(ctx, full, "application/json")
+	return c.rawGet(ctx, full, map[string]string{"Accept": "application/json"})
 }
 
 // GetExternal performs an unauthenticated GET against an absolute URL, reusing
 // the same retry/backoff/throttle machinery as GetRaw. It is used for NYT's
 // public RSS feeds (rss.nytimes.com), which carry no api-key and return XML.
 func (c *Client) GetExternal(ctx context.Context, rawURL string) ([]byte, error) {
-	return c.rawGet(ctx, rawURL, "application/xml, text/xml")
+	return c.rawGet(ctx, rawURL, map[string]string{"Accept": "application/xml, text/xml"})
+}
+
+// GetHTML fetches an absolute URL sending caller-supplied headers (e.g. Cookie +
+// a Chrome User-Agent), reusing the retry/throttle machinery. It is used by
+// `nyt read` to pull full article HTML from nytimes.com past DataDome. A
+// User-Agent in headers overrides the client's default; any other header is sent
+// verbatim.
+func (c *Client) GetHTML(ctx context.Context, rawURL string, headers map[string]string) ([]byte, error) {
+	return c.rawGet(ctx, rawURL, headers)
 }
 
 // rawGet runs the retry loop against an already-assembled URL, sending the given
-// Accept header.
-func (c *Client) rawGet(ctx context.Context, full, accept string) ([]byte, error) {
+// request headers.
+func (c *Client) rawGet(ctx context.Context, full string, headers map[string]string) ([]byte, error) {
 	var lastErr error
 	// pendingWait carries a server-supplied Retry-After into the next iteration's
 	// single sleep, so a 429 waits max(Retry-After, backoff) — never both added.
@@ -144,7 +153,7 @@ func (c *Client) rawGet(ctx context.Context, full, accept string) ([]byte, error
 		}
 		c.throttle()
 
-		body, retryAfter, err := c.do(ctx, full, accept)
+		body, retryAfter, err := c.do(ctx, full, headers)
 		if err == nil {
 			return body, nil
 		}
@@ -180,13 +189,16 @@ func (c *Client) Get(ctx context.Context, path string, q url.Values, out any) er
 
 // do issues a single request and returns the body, a Retry-After duration (if
 // the server sent one), and an error. The redacted URL hides the API key in logs.
-func (c *Client) do(ctx context.Context, full, accept string) ([]byte, time.Duration, error) {
+func (c *Client) do(ctx context.Context, full string, headers map[string]string) ([]byte, time.Duration, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, full, nil)
 	if err != nil {
 		return nil, 0, err
 	}
-	req.Header.Set("Accept", accept)
-	if c.UserAgent != "" {
+	for k, v := range headers {
+		req.Header.Set(k, v)
+	}
+	// Default the User-Agent to the client's unless the caller supplied one.
+	if _, ok := headers["User-Agent"]; !ok && c.UserAgent != "" {
 		req.Header.Set("User-Agent", c.UserAgent)
 	}
 	c.logf("GET %s", redact(full))

@@ -13,6 +13,10 @@ import (
 // EnvVar is the primary environment variable checked for the API key.
 const EnvVar = "NYT_API_KEY"
 
+// CookieEnvVar is the environment variable checked for the NYT browser cookie
+// (NYT-S + datadome) used by `nyt read` to fetch full article text.
+const CookieEnvVar = "NYT_COOKIE"
+
 // EnvVars lists, in priority order, the environment variables checked for the
 // API key. NYT_KEY matches the "Key" field shown on the developer dashboard.
 var EnvVars = []string{"NYT_API_KEY", "NYT_KEY"}
@@ -20,6 +24,7 @@ var EnvVars = []string{"NYT_API_KEY", "NYT_KEY"}
 // Config is the on-disk configuration file format.
 type Config struct {
 	APIKey string `json:"api_key"`
+	Cookie string `json:"cookie,omitempty"`
 }
 
 // ConfigPath returns the path to the config file, honoring $NYT_CONFIG and
@@ -81,6 +86,30 @@ func ResolveAPIKey(flagVal string) (key, source string, err error) {
 		"no NYT API key found — pass --api-key, set %s (or NYT_KEY) in your environment or .env, "+
 			"or run `nyt config set-key <KEY>`\nget a key at https://developer.nytimes.com/get-started",
 		EnvVar)
+}
+
+// ResolveCookie applies the precedence flag > env > file. It returns the cookie
+// and the source it came from, or an error if none is set. Reading article text
+// needs only this cookie, not the NYT API key.
+func ResolveCookie(flagVal string) (cookie, source string, err error) {
+	if v := strings.TrimSpace(flagVal); v != "" {
+		return v, "--cookie flag", nil
+	}
+	LoadDotEnv()
+	if v := strings.TrimSpace(os.Getenv(CookieEnvVar)); v != "" {
+		return v, CookieEnvVar + " env var", nil
+	}
+	cfg, err := Load()
+	if err != nil {
+		return "", "", err
+	}
+	if v := strings.TrimSpace(cfg.Cookie); v != "" {
+		return v, ConfigPath(), nil
+	}
+	return "", "", fmt.Errorf(
+		"no NYT cookie found — pass --cookie or set %s in your environment or .env "+
+			"(copy it from DevTools → Application → Cookies; must include NYT-S and datadome)",
+		CookieEnvVar)
 }
 
 // Save writes the config file, creating parent directories as needed.

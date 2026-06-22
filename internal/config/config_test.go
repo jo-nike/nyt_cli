@@ -28,6 +28,28 @@ func TestResolveAPIKeyPrecedence(t *testing.T) {
 	}
 }
 
+func TestResolveCookiePrecedence(t *testing.T) {
+	t.Setenv(CookieEnvVar, "")
+	t.Setenv("NYT_CONFIG", filepath.Join(t.TempDir(), "config.json")) // isolate from real config
+
+	// Flag wins.
+	if v, src, err := ResolveCookie("flagcookie"); err != nil || v != "flagcookie" || src != "--cookie flag" {
+		t.Fatalf("flag precedence failed: %q %q %v", v, src, err)
+	}
+
+	// Env is used when no flag.
+	t.Setenv(CookieEnvVar, "envcookie")
+	if v, src, err := ResolveCookie(""); err != nil || v != "envcookie" || src != CookieEnvVar+" env var" {
+		t.Fatalf("env resolution failed: %q %q %v", v, src, err)
+	}
+
+	// None set → error.
+	t.Setenv(CookieEnvVar, "")
+	if _, _, err := ResolveCookie(""); err == nil {
+		t.Fatal("expected error when no cookie is set")
+	}
+}
+
 func TestLoadDotEnv(t *testing.T) {
 	dir := t.TempDir()
 	envPath := filepath.Join(dir, ".env")
