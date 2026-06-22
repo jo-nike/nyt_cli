@@ -1,0 +1,32 @@
+# Secrets — never commit API keys
+.env
+.env.*
+!.env.example
+*.local
+
+# Compiled binaries / build output
+/nyt
+/dist/
+/build/
+*.exe
+*.test
+*.out
+
+# Go
+/vendor/
+go.work
+go.work.sum
+
+# Coverage / profiling
+coverage.txt
+coverage.out
+*.prof
+*.cpu
+*.mem
+
+# Editor / OS cruft
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*~
