@@ -24,7 +24,25 @@ The compiled binary is **bundled with this skill** — you don't need the source
 repo. Everything below is about choosing the right command and avoiding the few
 sharp edges.
 
-## Running the bundled binary
+## Setup — get the binary (first run only)
+
+This skill ships its instructions but **not** the `nyt` binary (binaries are
+large and platform-specific). Before the first call, make sure the binary exists
+at `bin/nyt` inside this skill's directory. If it's missing, run the bundled
+installer **once** — it downloads the right build for this machine from the
+GitHub release and verifies its SHA256 checksum:
+
+```sh
+bash <skill-dir>/scripts/install-binary.sh
+```
+
+It writes `bin/nyt` (and prints the version), after which the binary persists —
+you don't run this again. If the download is blocked, the fallbacks are
+`go install github.com/jo-nike/nyt_cli@latest` (Go 1.22+) or grabbing a binary
+from <https://github.com/jo-nike/nyt_cli/releases/latest> and dropping it at
+`bin/nyt`.
+
+## Running the binary
 
 The binary lives at `bin/nyt` inside this skill's directory (the absolute base
 directory is shown to you when the skill loads). Shell environment does **not**
@@ -36,16 +54,14 @@ invocation rather than relying on an exported variable or alias. For example:
 ```
 
 If a `nyt` is already on the user's `PATH`, that's the same tool and you can call
-it bare (`nyt topstories ...`) — but the bundled binary is the reliable default.
+it bare (`nyt topstories ...`) — but the skill's own `bin/nyt` is the reliable
+default. If `bin/nyt` is missing, do the **Setup** step above first.
 
-Two things that can stop the bundled binary cold:
-- **Wrong platform.** It's built for macOS arm64. On any other OS/arch it won't
-  execute — rebuild with `go install github.com/jo-nike/nyt_cli@latest`
-  (Go 1.22+) or `go build` from the source repo, and call that binary instead.
-  You can also grab a prebuilt binary for your OS/arch from the repo's releases.
-- **macOS quarantine** (only if it was downloaded/repackaged, not built locally):
-  if you see "cannot be opened", clear it with
-  `xattr -d com.apple.quarantine /abs/path/to/bin/nyt`.
+One more thing that can stop the binary cold:
+- **macOS quarantine** (only if it was downloaded with a browser, not via the
+  installer or built locally): if you see "cannot be opened", clear it with
+  `xattr -d com.apple.quarantine /abs/path/to/bin/nyt`. (The installer uses
+  `curl`, whose downloads are not quarantined, so this rarely applies.)
 
 ## Authentication — two separate models
 
