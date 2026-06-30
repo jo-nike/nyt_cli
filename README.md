@@ -62,13 +62,27 @@ This repo ships a Claude Code (and compatible agents) skill that drives the CLI.
 Install it with the [`skills`](https://github.com/vercel-labs/skills) CLI:
 
 ```sh
-npx skills@latest add jo-nike/nyt_cli
+# clean, Claude-only install into .claude/skills/nyt-cli (add -g for global, all projects)
+npx skills@latest add jo-nike/nyt_cli -a claude-code --copy
 ```
 
-That installs the `nyt-cli` skill into your agent. It expects the `nyt` binary on
-your `PATH` (or built into the skill's `bin/`) — grab a prebuilt binary from the
-[releases](https://github.com/jo-nike/nyt_cli/releases/latest) or `go install`
-it as above.
+`-a claude-code` targets Claude Code (no agent prompt to mis-toggle) and `--copy`
+writes real files instead of the CLI's default `.agents/` symlink layout. The bare
+`npx skills@latest add jo-nike/nyt_cli` also works, but the interactive picker
+always includes a universal `.agents/skills` copy — use the flags above to avoid it.
+
+**Getting the binary.** The skill ships its instructions but not the `nyt` binary
+(binaries are large and platform-specific). On first use it runs
+`scripts/install-binary.sh`, which downloads the right build for your OS/arch from
+the [latest release](https://github.com/jo-nike/nyt_cli/releases/latest), verifies
+its SHA256, and installs it to the skill's `bin/`. To do that step yourself:
+
+```sh
+bash <skill-dir>/scripts/install-binary.sh
+```
+
+If a `nyt` is already on your `PATH` (e.g. via `go install`), the skill uses that
+instead.
 
 ## Authentication
 
