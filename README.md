@@ -18,6 +18,35 @@ Top Stories — Technology (updated 2026-06-18T12:13:00-04:00)
 
 ## Install
 
+### Download a prebuilt binary (recommended)
+
+Grab the archive for your OS/arch from the
+[latest release](https://gitea.jonn.me/jons-org/nyt_cli/releases/latest)
+(`nyt-<os>-<arch>.tar.gz`, or `.zip` for Windows), extract it, and run `./nyt`.
+Each release also ships `checksums.txt` (SHA256) to verify the download.
+
+**First run — clearing the "unverified developer" prompt.** The release binaries
+are not code-signed, so when you download them your OS may block the first launch:
+
+- **macOS** — *"Apple could not verify 'nyt' is free of malware…"*. Strip the
+  download quarantine flag, then it runs normally:
+
+  ```sh
+  xattr -d com.apple.quarantine ./nyt    # or: xattr -cr <extracted-dir>
+  ```
+
+  (Or right-click `nyt` in Finder → **Open** → **Open** for a one-time exception.)
+- **Windows** — Defender SmartScreen may show *"Windows protected your PC"*. Click
+  **More info → Run anyway**, or right-click the downloaded `.zip` →
+  **Properties → Unblock** before extracting.
+- **Linux** — no prompt. The archive keeps the executable bit; if needed,
+  `chmod +x nyt`.
+
+These prompts are a normal consequence of unsigned binaries, not a problem with
+the build. Binaries you compile yourself (below) are never quarantined.
+
+### Build from source
+
 Requires Go 1.22+.
 
 ```sh
