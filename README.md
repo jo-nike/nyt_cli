@@ -56,6 +56,20 @@ go build -o nyt .        # produces ./nyt
 go install .
 ```
 
+## Claude Code skill
+
+This repo ships a Claude Code (and compatible agents) skill that drives the CLI.
+Install it with the [`skills`](https://github.com/vercel-labs/skills) CLI:
+
+```sh
+npx skills@latest add jo-nike/nyt_cli
+```
+
+That installs the `nyt-cli` skill into your agent. It expects the `nyt` binary on
+your `PATH` (or built into the skill's `bin/`) — grab a prebuilt binary from the
+[releases](https://github.com/jo-nike/nyt_cli/releases/latest) or `go install`
+it as above.
+
 ## Authentication
 
 Every request needs your NYT app **Key** (the "Key" shown for an app at

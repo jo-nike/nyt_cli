@@ -1,0 +1,7 @@
+{
+  "name": "nyt-cli",
+  "description": "Fetch New York Times content from the command line: top stories, article search, archive, most popular, books best-sellers, RSS feeds, and full-text article extraction.",
+  "skills": [
+    "./.claude/skills/nyt-cli"
+  ]
+}
