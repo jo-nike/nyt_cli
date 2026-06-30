@@ -108,6 +108,26 @@ nyt config show          # prints the source, value redacted
 > If a command returns `401 Invalid ApiKey for given resource` or a `404`, enable
 > that API for your app at <https://developer.nytimes.com/my-apps>.
 
+### Cookie (for `nyt read` only)
+
+`nyt read` fetches the article body off nytimes.com, which needs your logged-in
+**browser cookie** instead of the API key (it must contain the `NYT-S` and
+`datadome` values, copied from DevTools → Application → Cookies). It resolves in
+the same priority order as the key:
+
+1. `--cookie` flag
+2. `$NYT_COOKIE` environment variable
+3. a `.env` file in the current directory or any parent (auto-loaded)
+4. `~/.config/nyt/config.json`
+
+```sh
+nyt read "https://www.nytimes.com/…" --cookie "NYT-S=…; datadome=…"
+# or persist it:  echo 'NYT_COOKIE=NYT-S=…; datadome=…' >> .env
+```
+
+Cookies rotate; when yours expires `read` returns a clear "cookie expired or
+invalid" error — refresh it and retry.
+
 ## Global flags
 
 | Flag | Default | Description |
