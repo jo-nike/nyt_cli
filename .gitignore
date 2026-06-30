@@ -6,7 +6,7 @@
 
 # Compiled binaries / build output
 /nyt
-/dist/
+#/dist/
 /build/
 *.exe
 *.test

@@ -1,11 +1,15 @@
 BINARY := nyt
 PKG := github.com/derter/nyt
 VERSION ?= dev
+LDFLAGS := -X $(PKG)/cmd.Version=$(VERSION)
 
-.PHONY: build install test vet fmt lint tidy clean run
+# Cross-compile targets (os/arch). Override with PLATFORMS="linux/amd64 ...".
+PLATFORMS ?= darwin/amd64 darwin/arm64 linux/amd64 linux/arm64 windows/amd64
+
+.PHONY: build install test vet fmt lint tidy clean run release
 
 build: ## Build the ./nyt binary
-	go build -ldflags "-X $(PKG)/cmd.Version=$(VERSION)" -o $(BINARY) .
+	go build -ldflags "$(LDFLAGS)" -o $(BINARY) .
 
 install: ## Install nyt onto your PATH
 	go install -ldflags "-X $(PKG)/cmd.Version=$(VERSION)" .
@@ -22,8 +26,19 @@ fmt: ## Format all Go files
 tidy: ## Tidy go.mod/go.sum
 	go mod tidy
 
+release: ## Cross-compile binaries into dist/ for all PLATFORMS
+	@for platform in $(PLATFORMS); do \
+		os=$${platform%/*}; arch=$${platform#*/}; \
+		ext=""; [ "$$os" = "windows" ] && ext=".exe"; \
+		out="dist/$(BINARY)-$$os-$$arch$$ext"; \
+		echo "building $$out"; \
+		GOOS=$$os GOARCH=$$arch CGO_ENABLED=0 \
+			go build -ldflags "$(LDFLAGS)" -o "$$out" . || exit 1; \
+	done
+
 clean: ## Remove build artifacts
 	rm -f $(BINARY)
+	rm -rf dist
 
 run: build ## Build then run (use ARGS="topstories home")
 	./$(BINARY) $(ARGS)
