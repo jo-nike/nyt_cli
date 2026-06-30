@@ -3,7 +3,8 @@
 A command-line wrapper for the [New York Times developer APIs](https://developer.nytimes.com/apis),
 written in Go. It covers Top Stories, Article Search, the Archive, Most Popular,
 the Books best-seller lists, and the public RSS feeds — each as a subcommand
-with human-readable tables by default and raw JSON on demand.
+with human-readable tables by default and raw JSON on demand. It can also fetch
+the full readable text of any nytimes.com article (`nyt read`).
 
 ```
 $ nyt topstories technology
@@ -115,6 +116,20 @@ Backed by NYT's free public RSS feeds (no API key needed). The default section
 is `HomePage`; any feed name NYT publishes is accepted. Because NYT serves RSS
 as XML, `--json` here prints a **normalized** representation of the feed rather
 than a raw upstream passthrough.
+
+### Read (full article text)
+```sh
+nyt read "https://www.nytimes.com/2026/06/22/world/example.html"
+nyt read "<url>" --json
+```
+Fetches a nytimes.com article URL and prints its readable full text (the NYT
+APIs only return metadata, so the body is pulled directly from nytimes.com).
+This needs your **browser cookie**, not an API key, supplied (in priority order)
+via `--cookie`, `$NYT_COOKIE`, a `.env` file, or `~/.config/nyt/config.json`.
+Copy the cookie from DevTools → Application → Cookies (it must include the
+`NYT-S` and `datadome` values). Cookies rotate: when yours expires the fetch is
+blocked and you'll be told to refresh it. `--json` prints a lean shape (title,
+author, published, excerpt, text) with the raw HTML omitted.
 
 ### Config & version
 ```sh
