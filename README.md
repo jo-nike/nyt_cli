@@ -23,8 +23,8 @@ Requires Go 1.22+.
 ```sh
 git clone <this repo> && cd nyt_cli
 go build -o nyt .        # produces ./nyt
-# or install onto your PATH:
-go install github.com/derter/nyt@latest
+# or install onto your PATH (into $(go env GOPATH)/bin):
+go install .
 ```
 
 ## Authentication

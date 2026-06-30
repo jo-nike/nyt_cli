@@ -1,0 +1,26 @@
+{
+  "skill_name": "nyt-cli",
+  "evals": [
+    {
+      "id": 0,
+      "name": "search-then-read-fulltext",
+      "prompt": "I want to know what The New York Times is currently reporting about artificial intelligence in the workplace. Find their most relevant recent article and give me a short summary of its key points.",
+      "expected_output": "Uses nyt to search/browse (articlesearch or topstories technology), extracts the article URL (likely via --json), then runs `nyt read <url>` to fetch the full body and summarizes from the actual text — not from the abstract alone and not by scraping nytimes.com directly.",
+      "files": []
+    },
+    {
+      "id": 1,
+      "name": "books-bestseller-list",
+      "prompt": "What books are topping the NYT hardcover fiction best-seller list right now? Give me the top 3 with their authors.",
+      "expected_output": "Runs `nyt books list hardcover-fiction` (discovering the encoded list name via `nyt books lists` if needed) and reports the top 3 titles + authors. Does not need the read/cookie path.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "read-specific-url",
+      "prompt": "Can you pull up this NYT article and tell me the main takeaways? https://www.nytimes.com/2026/06/23/technology/meta-prediction-markets-app.html",
+      "expected_output": "Recognizes a specific nytimes.com URL calls for `nyt read <url>` (the cookie-authenticated full-text path), fetches the body, and reports takeaways from the real article text. If the cookie is expired it relays the refresh instruction rather than scraping or hallucinating.",
+      "files": []
+    }
+  ]
+}

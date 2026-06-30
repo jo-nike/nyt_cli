@@ -3,7 +3,7 @@
 // See https://developer.nytimes.com/apis for the upstream documentation.
 package main
 
-import "github.com/derter/nyt/cmd"
+import "gitea.jonn.me/jons-org/nyt_cli/cmd"
 
 func main() {
 	cmd.Execute()

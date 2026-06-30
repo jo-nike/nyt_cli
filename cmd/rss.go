@@ -7,7 +7,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/derter/nyt/internal/output"
+	"gitea.jonn.me/jons-org/nyt_cli/internal/output"
 	"github.com/spf13/cobra"
 )
 

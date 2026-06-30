@@ -1,0 +1,68 @@
+# GoReleaser config for the nyt CLI — https://goreleaser.com
+# Cuts a release on every `vX.Y.Z` tag: cross-compiled static binaries, archives,
+# SHA256 checksums, a changelog, and a self-contained Claude skill bundle, all
+# published to the Gitea release. See .gitea/workflows/release.yml.
+version: 2
+
+project_name: nyt
+
+before:
+  hooks:
+    - go mod tidy
+    # Build the matching binary into the vendored skill and zip it into dist/.
+    - bash scripts/build-skill-bundle.sh {{ .Version }}
+
+builds:
+  - id: nyt
+    main: .
+    binary: nyt
+    env:
+      - CGO_ENABLED=0
+    ldflags:
+      - -s -w -X gitea.jonn.me/jons-org/nyt_cli/cmd.Version={{ .Version }}
+    goos:
+      - darwin
+      - linux
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ignore:
+      # Match the existing 5-platform matrix (no windows/arm64).
+      - goos: windows
+        goarch: arm64
+
+archives:
+  - id: nyt
+    ids:
+      - nyt
+    name_template: nyt-{{ .Os }}-{{ .Arch }}
+    formats:
+      - tar.gz
+    format_overrides:
+      - goos: windows
+        formats:
+          - zip
+    files:
+      - README.md
+
+checksum:
+  name_template: checksums.txt
+  algorithm: sha256
+
+changelog:
+  use: git
+  sort: asc
+
+gitea_urls:
+  api: https://gitea.jonn.me/api/v1/
+  download: https://gitea.jonn.me/
+
+release:
+  gitea:
+    owner: jons-org
+    name: nyt_cli
+  # Attach the self-contained skill bundle produced by the before-hook.
+  # Staged in build/ (not dist/) so --clean doesn't choke on a non-empty dist.
+  extra_files:
+    - glob: ./build/nyt-cli-skill-*.zip

@@ -1,0 +1,46 @@
+name: release
+
+# Fires on every vX.Y.Z tag: GoReleaser cross-compiles, archives, checksums, and
+# publishes a Gitea release with the platform binaries plus the skill bundle.
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  goreleaser:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/catthehacker/ubuntu:act-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # full history so the changelog can be built
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: Ensure zip is available
+        run: |
+          if ! command -v zip >/dev/null 2>&1; then
+            if command -v sudo >/dev/null 2>&1; then
+              sudo apt-get update && sudo apt-get install -y zip
+            else
+              apt-get update && apt-get install -y zip
+            fi
+          fi
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          distribution: goreleaser
+          version: '~> v2'
+          args: release --clean
+        env:
+          # Gitea provisions this token for Actions; GoReleaser publishes the
+          # release with it. If it lacks release-write scope, replace with a PAT
+          # secret named GITEA_TOKEN (scope: write:repository).
+          GITEA_TOKEN: ${{ secrets.GITHUB_TOKEN }}

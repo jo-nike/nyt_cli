@@ -6,11 +6,14 @@
 
 # Compiled binaries / build output
 /nyt
-#/dist/
+/dist/
 /build/
 *.exe
 *.test
 *.out
+
+# Vendored skill's local binary (built via `make skill`; shipped via release bundle)
+.claude/skills/nyt-cli/bin/
 
 # Go
 /vendor/

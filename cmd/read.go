@@ -9,9 +9,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/derter/nyt/internal/client"
-	"github.com/derter/nyt/internal/config"
-	"github.com/derter/nyt/internal/output"
+	"gitea.jonn.me/jons-org/nyt_cli/internal/client"
+	"gitea.jonn.me/jons-org/nyt_cli/internal/config"
+	"gitea.jonn.me/jons-org/nyt_cli/internal/output"
 	readability "github.com/go-shiori/go-readability"
 	"github.com/spf13/cobra"
 	"golang.org/x/net/html"
