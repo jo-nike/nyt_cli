@@ -1,4 +1,4 @@
-module gitea.jonn.me/jons-org/nyt_cli
+module github.com/jo-nike/nyt_cli
 
 go 1.26.3
 

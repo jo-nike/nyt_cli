@@ -10,7 +10,7 @@ VERSION="${1:-dev}"
 GOOS_BUNDLE="${2:-darwin}"
 GOARCH_BUNDLE="${3:-arm64}"
 
-PKG="gitea.jonn.me/jons-org/nyt_cli"
+PKG="github.com/jo-nike/nyt_cli"
 SKILL_DIR=".claude/skills/nyt-cli"
 # Stage outside dist/: GoReleaser's --clean wipes dist/ and then refuses to run if
 # the before-hook has repopulated it. release.extra_files globs this path instead.

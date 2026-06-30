@@ -85,7 +85,7 @@ func New(apiKey string, opts ...Option) *Client {
 		APIKey:     apiKey,
 		BaseURL:    DefaultBaseURL,
 		HTTP:       &http.Client{Timeout: 30 * time.Second},
-		UserAgent:  "nyt-cli (+https://gitea.jonn.me/jons-org/nyt_cli)",
+		UserAgent:  "nyt-cli (+https://github.com/jo-nike/nyt_cli)",
 		MaxRetries: 3,
 	}
 	for _, o := range opts {

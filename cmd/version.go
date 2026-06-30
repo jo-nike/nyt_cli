@@ -9,7 +9,7 @@ import (
 
 // Version is overridable at build time:
 //
-//	go build -ldflags "-X gitea.jonn.me/jons-org/nyt_cli/cmd.Version=v1.2.3"
+//	go build -ldflags "-X github.com/jo-nike/nyt_cli/cmd.Version=v1.2.3"
 var Version = "dev"
 
 func init() {

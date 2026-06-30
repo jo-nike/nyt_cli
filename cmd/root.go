@@ -9,8 +9,8 @@ import (
 	"os"
 	"time"
 
-	"gitea.jonn.me/jons-org/nyt_cli/internal/client"
-	"gitea.jonn.me/jons-org/nyt_cli/internal/config"
+	"github.com/jo-nike/nyt_cli/internal/client"
+	"github.com/jo-nike/nyt_cli/internal/config"
 	"github.com/spf13/cobra"
 )
 

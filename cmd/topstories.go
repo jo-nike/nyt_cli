@@ -7,7 +7,7 @@ import (
 	"sort"
 	"strings"
 
-	"gitea.jonn.me/jons-org/nyt_cli/internal/output"
+	"github.com/jo-nike/nyt_cli/internal/output"
 	"github.com/spf13/cobra"
 )
 

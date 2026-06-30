@@ -1,7 +1,7 @@
 # GoReleaser config for the nyt CLI — https://goreleaser.com
 # Cuts a release on every `vX.Y.Z` tag: cross-compiled static binaries, archives,
 # SHA256 checksums, a changelog, and a self-contained Claude skill bundle, all
-# published to the Gitea release. See .gitea/workflows/release.yml.
+# published to the GitHub release. See .github/workflows/release.yml.
 version: 2
 
 project_name: nyt
@@ -19,7 +19,7 @@ builds:
     env:
       - CGO_ENABLED=0
     ldflags:
-      - -s -w -X gitea.jonn.me/jons-org/nyt_cli/cmd.Version={{ .Version }}
+      - -s -w -X github.com/jo-nike/nyt_cli/cmd.Version={{ .Version }}
     goos:
       - darwin
       - linux
@@ -54,13 +54,11 @@ changelog:
   use: git
   sort: asc
 
-gitea_urls:
-  api: https://gitea.jonn.me/api/v1/
-  download: https://gitea.jonn.me/
-
 release:
-  gitea:
-    owner: jons-org
+  # Published to GitHub — GoReleaser infers the repo from GITHUB_TOKEN and the
+  # GITHUB_REPOSITORY env in CI (github.com/jo-nike/nyt_cli).
+  github:
+    owner: jo-nike
     name: nyt_cli
   # Attach the self-contained skill bundle produced by the before-hook.
   # Staged in build/ (not dist/) so --clean doesn't choke on a non-empty dist.

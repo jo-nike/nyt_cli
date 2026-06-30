@@ -40,7 +40,7 @@ it bare (`nyt topstories ...`) — but the bundled binary is the reliable defaul
 
 Two things that can stop the bundled binary cold:
 - **Wrong platform.** It's built for macOS arm64. On any other OS/arch it won't
-  execute — rebuild with `go install gitea.jonn.me/jons-org/nyt_cli@latest`
+  execute — rebuild with `go install github.com/jo-nike/nyt_cli@latest`
   (Go 1.22+) or `go build` from the source repo, and call that binary instead.
   You can also grab a prebuilt binary for your OS/arch from the repo's releases.
 - **macOS quarantine** (only if it was downloaded/repackaged, not built locally):

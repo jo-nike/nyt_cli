@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"gitea.jonn.me/jons-org/nyt_cli/internal/config"
+	"github.com/jo-nike/nyt_cli/internal/config"
 	"github.com/spf13/cobra"
 )
 

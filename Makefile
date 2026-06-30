@@ -1,5 +1,5 @@
 BINARY := nyt
-PKG := gitea.jonn.me/jons-org/nyt_cli
+PKG := github.com/jo-nike/nyt_cli
 VERSION ?= dev
 LDFLAGS := -X $(PKG)/cmd.Version=$(VERSION)
 SKILL_DIR := .claude/skills/nyt-cli

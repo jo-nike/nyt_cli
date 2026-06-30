@@ -21,7 +21,7 @@ Top Stories — Technology (updated 2026-06-18T12:13:00-04:00)
 ### Download a prebuilt binary (recommended)
 
 Grab the archive for your OS/arch from the
-[latest release](https://gitea.jonn.me/jons-org/nyt_cli/releases/latest)
+[latest release](https://github.com/jo-nike/nyt_cli/releases/latest)
 (`nyt-<os>-<arch>.tar.gz`, or `.zip` for Windows), extract it, and run `./nyt`.
 Each release also ships `checksums.txt` (SHA256) to verify the download.
 
@@ -50,7 +50,7 @@ the build. Binaries you compile yourself (below) are never quarantined.
 Requires Go 1.22+.
 
 ```sh
-git clone <this repo> && cd nyt_cli
+git clone https://github.com/jo-nike/nyt_cli && cd nyt_cli
 go build -o nyt .        # produces ./nyt
 # or install onto your PATH (into $(go env GOPATH)/bin):
 go install .
